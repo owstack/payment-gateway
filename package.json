@@ -1,0 +1,52 @@
+{
+  "name": "payment-gateway",
+  "version": "1.0.0",
+  "description": "Accept payment in crypto currencies",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive test/"
+  },
+  "keywords": [
+    "bitcoin",
+    "cash",
+    "litecoin",
+    "payment",
+    "gateway"
+  ],
+  "author": "Ian Patton <ian@owstack.org>",
+  "license": "MIT",
+  "dependencies": {
+    "@owstack/bch-lib": "^0.1.0",
+    "@owstack/bch-payment-protocol": "0.0.6",
+    "@owstack/bitcoind-rpc": "^1.0.0",
+    "@owstack/btc-lib": "0.0.4",
+    "@owstack/btc-payment-protocol": "0.0.4",
+    "@owstack/ltc-lib": "0.0.8",
+    "@owstack/ltc-payment-protocol": "0.0.1",
+    "bn.js": "^4.11.8",
+    "boom": "^7.2.0",
+    "config": "^1.30.0",
+    "hapi": "^17.5.0",
+    "hapi-swagger": "^9.1.1",
+    "inert": "^5.1.0",
+    "joi": "^13.3.0",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.1.2",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "uuid": "^3.2.1",
+    "vision": "^5.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.1",
+    "documentation": "^6.3.3",
+    "eslint": "^4.19.1",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^5.2.0",
+    "sinon": "^5.0.7",
+    "supertest": "^3.1.0"
+  }
+}
