@@ -20,6 +20,7 @@ const RpcClient = require('@owstack/bitcoind-rpc');
 const Wallet = require('../models/wallet');
 
 async function createWallet(currencyCode) {
+    // console.log('Creating wallet for', currencyCode);
     const keys = [];
     keys.push(new coins[currencyCode].lib.HDPrivateKey());
     keys.push(new coins[currencyCode].lib.HDPrivateKey());
@@ -42,6 +43,7 @@ async function createWallet(currencyCode) {
         addressIndex: 0,
         currency: currencyCode
     });
+    // console.log(wallet);
     return wallet.save();
 }
 
@@ -66,9 +68,15 @@ describe(pkg.name, function () {
     describe('Routes:', function () {
 
         before(async function () {
-            await createWallet('BTC');
-            const wallets = Wallet.find({}).exec();
-            console.log(wallets);
+            try {
+                await createWallet('BTC');
+                await createWallet('BCH');
+                // await createWallet('LTC');
+            } catch (e) {
+                console.error(e);
+            }
+            // const wallets = await Wallet.find({}).exec();
+            // console.log(wallets);
         });
 
         after(function () {
@@ -119,7 +127,7 @@ describe(pkg.name, function () {
                     });
             });
 
-            xit('should get a payment request in bitcoincash-paymentrequest format', function () {
+            it('should get a payment request in bitcoincash-paymentrequest format', function () {
                 return request(service.server.listener)
                     .get(`/${createdId}`)
                     .set('Accept', 'application/bitcoincash-paymentrequest')
