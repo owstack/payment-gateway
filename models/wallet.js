@@ -1,31 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const WalletSchema = new Schema({
-    xpub: {type: String, required: true},
+let Wallet = new Schema({
+    keys: [{type: String, required: true}],
+    minSigs: {type: Number, default: 1},
+    basePath: {type: String, default: 'm/0'},
     addressIndex: {type: Number, default: 0},
-    basePath: {type: String, default: 'm/44\''},
-    currency: {type: String, required: true},
-    testnet: {type: Boolean, required: true},
-    identity: {type: Schema.Types.ObjectId, ref: 'Identity', required: true}
+    currency: {type: String, required: true}
 });
 
-WalletSchema.methods.pathForCurrency = function () {
-    const slip44 = {
-        bch: 145,
-        btc: 0,
-        ltc: 2
-    };
-
-    if (!slip44[this.currency]) {
-        throw new Error(`No SLIP44 mapping for currency: ${this.currency}`);
-    }
-
-    return `${this.basePath}/${slip44[this.currency]}'/${this.addressIndex}'`;
+Wallet.methods.getDerivationPath = function () {
+    return `${this.basePath}/${this.addressIndex}`;
 };
 
-WalletSchema.methods.updateAddressIndex = function () {
-    return WalletSchema.findOneAndUpdate(
+Wallet.methods.updateAddressIndex = function () {
+    return Wallet.findOneAndUpdate(
         {
             _id: this._id
         },
@@ -40,4 +29,4 @@ WalletSchema.methods.updateAddressIndex = function () {
     ).exec();
 };
 
-module.exports = mongoose.model('Wallet', WalletSchema);
+module.exports = Wallet = mongoose.model('Wallet', Wallet);
