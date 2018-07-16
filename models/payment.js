@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const config = require('config');
+
 const PAYMENT_STATES = ['none', 'partial', 'paid', 'over'];
 const ACCEPTANCE_STATES = ['pending', 'accepted', 'returned'];
 
@@ -45,6 +47,15 @@ const PaymentSchema = new Schema({
     memo: String,
     ref: String,
     createdBy: {type: String, required: true}
+});
+
+PaymentSchema.virtual('paymentURLs').get(function () {
+    const url = `https://${config.externalHostname}/${this._id}`;
+    return {
+        bitcoin: `bitcoin:?r=${url}`,
+        bitcoincash: `bitcoincash:?r=${url}`,
+        litecoin: `litecoin:?r=${url}`,
+    };
 });
 
 module.exports = mongoose.model('Payment', PaymentSchema);

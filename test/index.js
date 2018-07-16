@@ -71,7 +71,7 @@ describe(pkg.name, function () {
             try {
                 await createWallet('BTC');
                 await createWallet('BCH');
-                // await createWallet('LTC');
+                await createWallet('LTC');
             } catch (e) {
                 console.error(e);
             }
@@ -141,7 +141,7 @@ describe(pkg.name, function () {
                     });
             });
 
-            xit('should get a payment request in litecoin-paymentrequest format', function () {
+            it('should get a payment request in litecoin-paymentrequest format', function () {
                 return request(service.server.listener)
                     .get(`/${createdId}`)
                     .set('Accept', 'application/litecoin-paymentrequest')

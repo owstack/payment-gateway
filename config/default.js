@@ -1,7 +1,10 @@
 const fs = require('fs');
 const environment = process.env.ENVIRONMENT || process.env.NODE_ENV || 'development';
 
+const certDir = process.env.CERT_DIR || `${__dirname}/../zerossl`;
+
 module.exports = {
+    port: Number(process.env.SERVICE_PORT) || 3000,
     db: process.env.DB_CONN_STRING || `mongodb://localhost:27017/payment-gateway-${environment}`,
     externalHostname: process.env.EXTERNAL_HOSTNAME || 'localhost',
     xpub: process.env.XPUB,
@@ -38,5 +41,9 @@ module.exports = {
             port: Number(process.env.LTC_RPC_PORT) || 9332,
             feeEstimateCommand: 'estimateSmartFee'
         }
+    },
+    https: {
+        key: fs.readFileSync(`${certDir}/payments.owstack.org.key`),
+        cert: fs.readFileSync(`${certDir}/payments.owstack.org.crt`)
     }
 };
