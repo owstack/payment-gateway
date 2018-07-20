@@ -20,21 +20,18 @@ const RpcClient = require('@owstack/bitcoind-rpc');
 const Wallet = require('../models/wallet');
 
 async function createWallet(currencyCode) {
-    // console.log('Creating wallet for', currencyCode);
-    const keys = [];
-    keys.push(new coins[currencyCode].lib.HDPrivateKey());
-    keys.push(new coins[currencyCode].lib.HDPrivateKey());
-    keys.push(new coins[currencyCode].lib.HDPrivateKey());
-    // console.log(keys);
-    const derivedXprivs = [];
-    derivedXprivs.push(new coins[currencyCode].lib.HDPrivateKey(keys[0].derive('m/44\'/0\'/0\'').xprivkey));
-    derivedXprivs.push(new coins[currencyCode].lib.HDPrivateKey(keys[1].derive('m/44\'/0\'/0\'').xprivkey));
-    derivedXprivs.push(new coins[currencyCode].lib.HDPrivateKey(keys[2].derive('m/44\'/0\'/0\'').xprivkey));
-    // console.log(derivedXprivs);
     const xpubs = [];
-    xpubs.push(derivedXprivs[0].hdPublicKey);
-    xpubs.push(derivedXprivs[1].hdPublicKey);
-    xpubs.push(derivedXprivs[2].hdPublicKey);
+    if (currencyCode === 'BTC') {
+        xpubs.push('xpub6DVhME6zTr9hbTxXonFnR8ivJSGgBeWjYU9JNHGmyGqv4FcE8D8v6VCoxXvbady7BzTYtpS6uwSWkzC3fZ7n4zRavj5MAsBc7rsQTxioqdo');
+        xpubs.push('xpub6BunPg6rKmoixwdqDZ3jW3TRbuH9NYSV4JUcATag3TY2GTZyA8TVtpom7smUyTyArLzvwG7s1Vpq3RMtazFmwjnKYCZGUcgfTVfCppCfACm');
+    } else {
+        // from bitcoin.com wallet/server
+        // xpubs.push('xpub6CxAGMrgZahq1YAcA6Sx9obphTtz1Qx6U96jm7pZJ4emuUhKwPoV5R8UrsPdkDR6gKJPNmsdTuRz6cfqgarbZdYehH4UFCqQkAfatXUACMw');
+        // xpubs.push('xpub6DTKxsGfArmY2wCKqkqFo7xQPLxgZLaXBXU4Ljya6b1N4eLAxv8k9xtAzakzwMc1rDrEvfXTq84src3JTV5DQmxtKKmJYwADL5Dg8xpJL6Q');
+        xpubs.push('xpub6BzEZ5dQCqDXyhsf7iELMgtcrT46rCxsmmoTgHrMxy8WpwkkH7LhJUk6FgSCrGt73zQ3419C9y7nCzo2qhDX8CRqKv7hhEcep6NRDiUZ9ee');
+        xpubs.push('xpub6CjBNCBNyjhuZfWc8WnrqDezz9h5sweSHZw95GEh7iL9hPc2yBDeQy3wEEFihDxnTLwQpGp9qvD8RGHjMbDuWDLRFr97z6kgDGtdUwfj3Vz');
+
+    }
     // console.log(xpubs);
     const wallet = new Wallet({
         keys: xpubs,
@@ -65,8 +62,7 @@ describe(pkg.name, function () {
 
     let createdId;
 
-    describe('Routes:', function () {
-
+    describe('Address Generation:', function () {
         before(async function () {
             try {
                 await createWallet('BTC');
@@ -78,6 +74,38 @@ describe(pkg.name, function () {
             // const wallets = await Wallet.find({}).exec();
             // console.log(wallets);
         });
+
+        it('should generate multisig BTC addresses in the same manner as Copay', async function () {
+            const copayAddresses = [
+                '36xCkmfMgDs5y4gkHpko8ybYFen3SMsgGQ',
+                '3KHbi1e8XMSW2UvCmndSfcoKja5owezs6t',
+                '39c3Sp8n3yu4biLMqnhkDisY849zcF1FVU'
+            ];
+            const address0 = await coins.generatePaymentAddress('BTC');
+            (address0.address.toString()).should.equal(copayAddresses[0]);
+            const address1 = await coins.generatePaymentAddress('BTC');
+            (address1.address.toString()).should.equal(copayAddresses[1]);
+            const address2 = await coins.generatePaymentAddress('BTC');
+            (address2.address.toString()).should.equal(copayAddresses[2]);
+        });
+
+        it('should generate multisig BCH addresses in the same manner as Copay', async function () {
+            const bitpayCashAddresses = [
+                'prxevgrpaxlht9hddsm6c8xah948q9592g4rvxlvhr',
+                'pr60t8re5eddc0junjntyxmugglqv9kseyf0cvpwk4',
+                'pp4znae60zqlhl3gx5v5x3g2s35plcsthyag7j66qj'
+            ];
+            const address0 = await coins.generatePaymentAddress('BCH');
+            const address1 = await coins.generatePaymentAddress('BCH');
+            const address2 = await coins.generatePaymentAddress('BCH');
+
+            (address0.address.toCashaddrString()).should.equal(`bitcoincash:${bitpayCashAddresses[0]}`);
+            (address1.address.toCashaddrString()).should.equal(`bitcoincash:${bitpayCashAddresses[1]}`);
+            (address2.address.toCashaddrString()).should.equal(`bitcoincash:${bitpayCashAddresses[2]}`);
+        });
+    });
+
+    describe('Routes:', function () {
 
         after(function () {
             return Wallet.remove({}).exec();
@@ -91,8 +119,8 @@ describe(pkg.name, function () {
                     .set('Authorization', `Bearer ${token}`)
                     .send({
                         currency: 'USD',
-                        amount: 5.00,
-                        memo: 'Test TX',
+                        amount: '0.50',
+                        memo: '$0.50 Test TX',
                         ref: 'inv: 123'
                     })
                     .set('Accept', 'application/json')
@@ -123,7 +151,6 @@ describe(pkg.name, function () {
                     .expect(200)
                     .then((res) => {
                         res.body.should.exist;
-                        // console.log(JSON.stringify(res.body, null, 2));
                     });
             });
 

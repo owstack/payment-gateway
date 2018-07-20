@@ -6,9 +6,10 @@ const certDir = process.env.CERT_DIR || `${__dirname}/../zerossl`;
 module.exports = {
     port: Number(process.env.SERVICE_PORT) || 3000,
     db: process.env.DB_CONN_STRING || `mongodb://localhost:27017/payment-gateway-${environment}`,
-    externalHostname: process.env.EXTERNAL_HOSTNAME || 'localhost',
+    externalHostname: process.env.EXTERNAL_HOSTNAME || 'payments.owstack.org',
     xpub: process.env.XPUB,
     x509: {
+        ca: fs.readFileSync(process.env.X509_CA_CERTIFICATE || './zerossl/payments.owstack.org.ca.der'),
         cert: fs.readFileSync(process.env.X509_DER_CERTIFICATE || './zerossl/payments.owstack.org.der'),
         key: fs.readFileSync(process.env.X509_PRIVATE_KEY || './zerossl/payments.owstack.org.key')
     },

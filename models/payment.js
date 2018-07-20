@@ -3,12 +3,19 @@ const Schema = mongoose.Schema;
 
 const config = require('config');
 
-const PAYMENT_STATES = ['none', 'partial', 'paid', 'over'];
-const ACCEPTANCE_STATES = ['pending', 'accepted', 'returned'];
+// const PAYMENT_STATES = ['none', 'partial', 'paid', 'over'];
+// const ACCEPTANCE_STATES = ['pending', 'accepted', 'returned'];
 
 const fifteenMinutes = 15 * 60 * 1000;
 
 const uuidV4 = require('uuid/v4');
+
+const AddressSchema = new Schema({
+    currency: {type: String, required: true},
+    address: {type: String, required: true},
+    wallet: {type: Schema.Types.ObjectId, required: true},
+    addressIndex: {type: String, required: true}
+});
 
 const PriceSchema = new Schema({
     pair: {type: String, required: true},
@@ -24,7 +31,6 @@ const FeeSchema = new Schema({
 
 const ReceiptSchema = new Schema({
     currency: {type: String, required: true},
-    amount: {type: Schema.Types.Decimal128, required: true},
     timestamp: {type: Date, default: Date.now},
     txid: {type: String, required: true}
 });
@@ -37,13 +43,10 @@ const PaymentSchema = new Schema({
     expires: {type: Date, default: function () {
         return Date.now() + fifteenMinutes;
     }},
+    addresses: [AddressSchema],
     prices: [PriceSchema],
     fees: [FeeSchema],
     received: [ReceiptSchema],
-    state: {
-        payment: {type: String, enum: PAYMENT_STATES, default: PAYMENT_STATES[0]},
-        acceptance: {type: String, enum: ACCEPTANCE_STATES, default: ACCEPTANCE_STATES[0]}
-    },
     memo: String,
     ref: String,
     createdBy: {type: String, required: true}
@@ -52,10 +55,20 @@ const PaymentSchema = new Schema({
 PaymentSchema.virtual('paymentURLs').get(function () {
     const url = `https://${config.externalHostname}/${this._id}`;
     return {
-        bitcoin: `bitcoin:?r=${url}`,
-        bitcoincash: `bitcoincash:?r=${url}`,
-        litecoin: `litecoin:?r=${url}`,
+        BTC: `bitcoin:?r=${url}`,
+        BCH: `bitcoincash:?r=${url}`,
+        LTC: `litecoin:?r=${url}`,
     };
+});
+
+PaymentSchema.virtual('status').get(function () {
+    if (this.received && this.received.length) {
+        return 'paid';
+    }
+    if (this.expires > Date.now()) {
+        return 'expired';
+    }
+    return 'new';
 });
 
 module.exports = mongoose.model('Payment', PaymentSchema);
