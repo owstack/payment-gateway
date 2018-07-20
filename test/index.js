@@ -32,7 +32,6 @@ async function createWallet(currencyCode) {
         xpubs.push('xpub6CjBNCBNyjhuZfWc8WnrqDezz9h5sweSHZw95GEh7iL9hPc2yBDeQy3wEEFihDxnTLwQpGp9qvD8RGHjMbDuWDLRFr97z6kgDGtdUwfj3Vz');
 
     }
-    // console.log(xpubs);
     const wallet = new Wallet({
         keys: xpubs,
         minSigs: 2,
@@ -40,7 +39,6 @@ async function createWallet(currencyCode) {
         addressIndex: 0,
         currency: currencyCode
     });
-    // console.log(wallet);
     return wallet.save();
 }
 
@@ -61,6 +59,7 @@ describe(pkg.name, function () {
     });
 
     let createdId;
+    let createdId2;
 
     describe('Address Generation:', function () {
         before(async function () {
@@ -112,7 +111,7 @@ describe(pkg.name, function () {
         });
 
         describe('POST /', function () {
-            it('should create a payment request for the user', function () {
+            it('should create a USD payment request for the user', function () {
                 const token = jwt.sign({sub: 'foo'}, 'test');
                 return request(service.server.listener)
                     .post('/')
@@ -128,6 +127,26 @@ describe(pkg.name, function () {
                     .then((res) => {
                         (res.body).should.exist;
                         createdId = res.body._id;
+                        // console.log(JSON.stringify(res.body, null, 2));
+                    });
+            });
+
+            it('should create a BTC payment request for the user', function () {
+                const token = jwt.sign({sub: 'foo'}, 'test');
+                return request(service.server.listener)
+                    .post('/')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send({
+                        currency: 'BTC',
+                        amount: '0.50',
+                        memo: 'Ƀ 0.50 Test TX',
+                        ref: 'inv: 123'
+                    })
+                    .set('Accept', 'application/json')
+                    .expect(200)
+                    .then((res) => {
+                        (res.body).should.exist;
+                        createdId2 = res.body._id;
                         // console.log(JSON.stringify(res.body, null, 2));
                     });
             });
@@ -182,9 +201,23 @@ describe(pkg.name, function () {
                     });
             });
 
-            it('should get a payment request in bitcoin-paymentrequest format', function () {
+            it('should get a USD payment request in bitcoin-paymentrequest format', function () {
                 return request(service.server.listener)
                     .get(`/${createdId}`)
+                    .set('Accept', 'application/bitcoin-paymentrequest')
+                    .expect(200)
+                    .then((res) => {
+                        res.body.should.exist;
+                        const body = coins.BTC.paypro.PaymentRequest.decode(res.body);
+                        const payReq = new coins.BTC.paypro().makePaymentRequest(body);
+                        const verified = payReq.verify();
+                        (verified).should.be.true;
+                    });
+            });
+
+            it('should get a BTC payment request in bitcoin-paymentrequest format', function () {
+                return request(service.server.listener)
+                    .get(`/${createdId2}`)
                     .set('Accept', 'application/bitcoin-paymentrequest')
                     .expect(200)
                     .then((res) => {

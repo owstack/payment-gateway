@@ -32,7 +32,10 @@ const FeeSchema = new Schema({
 const ReceiptSchema = new Schema({
     currency: {type: String, required: true},
     timestamp: {type: Date, default: Date.now},
-    txid: {type: String, required: true}
+    txid: {type: String, required: true},
+    merchantData: {type: String},
+    refundTo: {type: String},
+    memo: {type: String}
 });
 
 const PaymentSchema = new Schema({

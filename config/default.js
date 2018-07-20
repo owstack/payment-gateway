@@ -3,10 +3,12 @@ const environment = process.env.ENVIRONMENT || process.env.NODE_ENV || 'developm
 
 const certDir = process.env.CERT_DIR || `${__dirname}/../zerossl`;
 
+const externalHostname = process.env.EXTERNAL_HOSTNAME || 'payments.owstack.org';
+
 module.exports = {
     port: Number(process.env.SERVICE_PORT) || 3000,
     db: process.env.DB_CONN_STRING || `mongodb://localhost:27017/payment-gateway-${environment}`,
-    externalHostname: process.env.EXTERNAL_HOSTNAME || 'payments.owstack.org',
+    externalHostname,
     xpub: process.env.XPUB,
     x509: {
         ca: fs.readFileSync(process.env.X509_CA_CERTIFICATE || './zerossl/payments.owstack.org.ca.der'),
@@ -20,31 +22,13 @@ module.exports = {
         LTCUSD: process.env.RATES_LTCUSD || 'http://rates.owstack.org/convert/gdax,bitstamp/ltcusd'
     },
     currencies: ['USD', 'BTC', 'BCH', 'LTC'],
-    networkRPC: {
-        BTC: {
-            host: process.env.BTC_RPC_HOST || 'http://btc-mainnet-bitcoin-core',
-            user: process.env.BTC_RPC_USER,
-            pass: process.env.BTC_RPC_PASS,
-            port: Number(process.env.BTC_RPC_PORT) || 8332,
-            feeEstimateCommand: 'estimateFee'
-        },
-        BCH: {
-            host: process.env.BCH_RPC_HOST || 'http://bch-mainnet-bitcoin-abc',
-            user: process.env.BCH_RPC_USER,
-            pass: process.env.BCH_RPC_PASS,
-            port: Number(process.env.BCH_RPC_PORT) || 8332,
-            feeEstimateCommand: 'estimateSmartFee'
-        },
-        LTC: {
-            host: process.env.LTC_RPC_HOST || 'http://ltc-mainnet-litecoin',
-            user: process.env.LTC_RPC_USER,
-            pass: process.env.LTC_RPC_PASS,
-            port: Number(process.env.LTC_RPC_PORT) || 9332,
-            feeEstimateCommand: 'estimateSmartFee'
-        }
-    },
     https: {
-        key: fs.readFileSync(`${certDir}/payments.owstack.org.key`),
-        cert: fs.readFileSync(`${certDir}/payments.owstack.org.crt`)
+        key: fs.readFileSync(`${certDir}/${externalHostname}.key`),
+        cert: fs.readFileSync(`${certDir}/${externalHostname}.crt`)
+    },
+    explorerAPIs: {
+        BTC: process.env.BTC_EXPLORER_API || 'http://btc.livenet.explorer-api.owstack.org/explorer-api',
+        BCH: process.env.BCH_EXPLORER_API || 'http://bch.livenet.explorer-api.owstack.org/explorer-api',
+        LTC: process.env.LTC_EXPLORER_API || 'http://ltc.livenet.explorer-api.owstack.org/explorer-api'
     }
 };
