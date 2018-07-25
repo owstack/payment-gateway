@@ -9,7 +9,7 @@ RUN useradd --user-group --create-home --shell /bin/false ows
 
 # Setup environment variables
 ENV NODE_ENV=production
-ENV APP_NAME=rate-service
+ENV APP_NAME=payment-gateway
 ENV HOME_PATH=/home/ows
 ENV APP_DIR=$HOME_PATH/$APP_NAME
 
