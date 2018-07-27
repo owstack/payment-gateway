@@ -106,13 +106,23 @@ describe(pkg.name, function () {
 
     describe('Routes:', function () {
 
+        before(function () {
+            service.server.app.identityServicePublicKey = {
+                keys: {
+                    rsa: [
+                        config.https.cert
+                    ]
+                }
+            };
+        });
+
         after(function () {
             return Wallet.remove({}).exec();
         });
 
         describe('POST /', function () {
             it('should create a USD payment request for the user', function () {
-                const token = jwt.sign({sub: 'foo'}, 'test');
+                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
                     .set('Authorization', `Bearer ${token}`)
@@ -132,7 +142,7 @@ describe(pkg.name, function () {
             });
 
             it('should create a BTC payment request for the user', function () {
-                const token = jwt.sign({sub: 'foo'}, 'test');
+                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
                     .set('Authorization', `Bearer ${token}`)
@@ -152,7 +162,7 @@ describe(pkg.name, function () {
             });
 
             it('should provide a 400 error on improper requests', function () {
-                const token = jwt.sign({sub: 'foo'}, 'test');
+                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
                     .set('Authorization', `Bearer ${token}`)
