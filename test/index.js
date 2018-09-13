@@ -117,7 +117,7 @@ describe(pkg.name, function () {
         });
 
         after(function () {
-            return Wallet.remove({}).exec();
+            return Wallet.deleteMany({}).exec();
         });
 
         describe('POST /', function () {

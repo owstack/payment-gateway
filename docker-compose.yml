@@ -4,3 +4,4 @@ services:
     image: mongo:latest
     ports:
         - "27017:27017"
+    command: ["mongod", "--replSet", "rs1"]

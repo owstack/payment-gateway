@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
 
 let Wallet = new Schema({
