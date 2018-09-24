@@ -3,7 +3,7 @@ mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
 
 let Wallet = new Schema({
-    keys: [{type: String, required: true}],
+    keys: [{type: Schema.Types.ObjectId, ref: 'Key'}],
     minSigs: {type: Number, default: 1},
     basePath: {type: String, default: 'm/0'},
     addressIndex: {type: Number, default: 0},
