@@ -28,10 +28,6 @@ module.exports = {
         LTCUSD: process.env.RATES_LTCUSD || 'http://rates.owstack.org/convert/gdax,bitstamp/ltcusd'
     },
     currencies: ['USD', 'BTC', 'BCH', 'LTC'],
-    https: {
-        key: fs.readFileSync(`${certDir}/${externalHostname}.key`),
-        cert: fs.readFileSync(`${certDir}/${externalHostname}.crt`)
-    },
     smtp: {
         host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
         port: Number(process.env.SMTP_PORT) || 465,
