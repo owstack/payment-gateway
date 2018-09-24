@@ -2,8 +2,6 @@ const sinon = require('sinon');
 const chai = require('chai');
 chai.should();
 
-const jwt = require('jsonwebtoken');
-
 const Service = require('../lib/service');
 const config = require('config');
 const service = new Service(config);
@@ -106,26 +104,15 @@ describe(pkg.name, function () {
 
     describe('Routes:', function () {
 
-        before(function () {
-            service.server.app.identityServicePublicKey = {
-                keys: {
-                    rsa: [
-                        config.https.cert
-                    ]
-                }
-            };
-        });
-
         after(function () {
-            return Wallet.remove({}).exec();
+            return Wallet.deleteMany({}).exec();
         });
 
         describe('POST /', function () {
             it('should create a USD payment request for the user', function () {
-                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
-                    .set('Authorization', `Bearer ${token}`)
+                    .set(config.authHeaders.id, '123')
                     .send({
                         currency: 'USD',
                         amount: '0.50',
@@ -142,10 +129,9 @@ describe(pkg.name, function () {
             });
 
             it('should create a BTC payment request for the user', function () {
-                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
-                    .set('Authorization', `Bearer ${token}`)
+                    .set(config.authHeaders.id, '123')
                     .send({
                         currency: 'BTC',
                         amount: '0.50',
@@ -162,10 +148,9 @@ describe(pkg.name, function () {
             });
 
             it('should provide a 400 error on improper requests', function () {
-                const token = jwt.sign({sub: 'foo'}, config.https.key, {algorithm: 'RS512'});
                 return request(service.server.listener)
                     .post('/')
-                    .set('Authorization', `Bearer ${token}`)
+                    .set(config.authHeaders.id, '123')
                     .send({})
                     .set('Accept', 'application/json')
                     .expect(400);

@@ -7,7 +7,10 @@ const externalHostname = process.env.EXTERNAL_HOSTNAME || 'payments.owstack.org'
 const port = Number(process.env.SERVICE_PORT) || 3000;
 
 module.exports = {
-    identityService: process.env.JWT_PROVIDER || 'identity.owstack.org',
+    authHeaders: {
+        email: process.env.AUTH_HEADER_EMAIL || 'x-user-auth-email',
+        id: process.env.AUTH_HEADER_ID || 'x-user-auth-id'
+    },
     paymentEmail: process.env.PAYMENT_EMAIL || 'SetPaymentEmailAddressInConfig',
     port,
     db: process.env.DB_CONN_STRING || `mongodb://localhost:27017/payment-gateway-${environment}`,
