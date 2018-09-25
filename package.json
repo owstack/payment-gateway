@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "description": "Accept payment in crypto currencies",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "boom": "^7.2.0",
     "config": "^1.31.0",
     "hapi": "^17.5.4",
-    "hapi-swagger": "^9.1.1",
+    "hapi-swagger": "floristic-project/hapi-swagger#master",
     "inert": "^5.1.0",
     "joi": "^13.6.0",
     "jsonwebtoken": "^8.3.0",

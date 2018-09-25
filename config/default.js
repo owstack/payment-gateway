@@ -41,5 +41,6 @@ module.exports = {
         BTC: process.env.BTC_EXPLORER_API || 'http://btc.livenet.explorer-api.owstack.org/explorer-api',
         BCH: process.env.BCH_EXPLORER_API || 'http://bch.livenet.explorer-api.owstack.org/explorer-api',
         LTC: process.env.LTC_EXPLORER_API || 'http://ltc.livenet.explorer-api.owstack.org/explorer-api'
-    }
+    },
+    proxyPath: process.env.PROXY_PATH
 };
