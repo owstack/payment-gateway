@@ -2,12 +2,26 @@ const config = require('config');
 const mongoose = require('mongoose');
 const Wallet = require('../models/wallet');
 
-const xpubs = [];
-const currencies = ['BCH', 'BTC', 'LTC'];
+const btcXpubs = [];
+const bchXpubs = [];
+// const ltcXpubs = [];
+
+// const currencies = ['BCH', 'BTC', 'LTC'];
 
 // BTC wallet
-xpubs.push('xpub6DVhME6zTr9hbTxXonFnR8ivJSGgBeWjYU9JNHGmyGqv4FcE8D8v6VCoxXvbady7BzTYtpS6uwSWkzC3fZ7n4zRavj5MAsBc7rsQTxioqdo');
-xpubs.push('xpub6BunPg6rKmoixwdqDZ3jW3TRbuH9NYSV4JUcATag3TY2GTZyA8TVtpom7smUyTyArLzvwG7s1Vpq3RMtazFmwjnKYCZGUcgfTVfCppCfACm');
+btcXpubs.push('xpub6CKeAVKcVkhYBQ79K6esJFB9vEjdHFQbnAGNexUdCz1Jtrn5g4AqmQwq5BVoSrmSTEjV13qHfQ1Tntzy2JYFwSPkPkNeRdefSTwVYGbT7kK');
+btcXpubs.push('xpub6BowusUnSGdtcX9J21jGgFByQCLsQudgoxmgLFDcFA1516mijbiJD3QPbYXKob7LcStj8ZoqMBmAqSMY2rGLHc493stNLTkPAm7tvpVuzaW');
+btcXpubs.push('xpub6CZWs42xFKyD1ifxuHT1GovDhjf92cASs1johoFZR9tbEFfofxNhA7trhTXQiqkTZotVNBJUgGY7uCbndeCzXqQshmYTjoQueKcARjGPdiC');
+
+// BCH Wallet
+bchXpubs.push('xpub6CJeoNR7qtMjr2bab19C5vUBFR8PZSGJiPYNuqivQBjYQooxJnJnoaKUNG1tXAbcTXz56YE4msdn6RQjk97fsjaLPxexyde8P52RYzwDAe7');
+bchXpubs.push('xpub6CKGppfqJHwiLH3nXhW2udubBppyZpxEP9x7MobNKjaqvCdoNVAH36WvM9LZkf5UZ6oHxbhz4b63vmMZtjjqC58LBP3C4zWdcSDqef1w8oR');
+bchXpubs.push('xpub6DBza8v826yuU83Z9hZhG6NyGrhu4BqDBo8wobRB4hZBuJTidomVL3xNanmAszADE81NVGvgRYf5hNvmvc6nhSDJSq9ZBdmuTiSD2t5RG9M');
+
+// LTC
+// ltcXpubs.push();
+// ltcXpubs.push();
+// ltcXpubs.push();
 
 async function create() {
     await mongoose.connect(config.db, {
@@ -16,16 +30,30 @@ async function create() {
         reconnectTries: 30
     });
     const promises = [];
-    currencies.forEach((curr) => {
-        const wallet = new Wallet({
-            keys: xpubs,
-            minSigs: 2,
-            basePath: 'm/0',
-            addressIndex: 0,
-            currency: curr
-        });
-        promises.push(wallet.save());
+    const BTCWallet = new Wallet({
+        keys: btcXpubs,
+        minSigs: 2,
+        basePath: 'm/0',
+        addressIndex: 0,
+        currency: 'BTC'
     });
+    promises.push(BTCWallet.save());
+    const BCHWallet = new Wallet({
+        keys: bchXpubs,
+        minSigs: 2,
+        basePath: 'm/0',
+        addressIndex: 0,
+        currency: 'BCH'
+    });
+    promises.push(BCHWallet.save());
+    // const LTCWallet = new Wallet({
+    //     keys: ltcXpubs,
+    //     minSigs: 2,
+    //     basePath: 'm/0',
+    //     addressIndex: 0,
+    //     currency: 'LTC'
+    // });
+    // promises.push(LTCWallet.save());
     await Promise.all(promises);
     console.log('done');
 }
