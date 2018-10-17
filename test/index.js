@@ -120,10 +120,11 @@ describe(pkg.name, function () {
                         ref: 'inv: 123'
                     })
                     .set('Accept', 'application/json')
-                    .expect(200)
+                    .expect(201)
                     .then((res) => {
                         (res.body).should.exist;
                         createdId = res.body._id;
+                        (res.body.paymentURLs).should.exist;
                         // console.log(JSON.stringify(res.body, null, 2));
                     });
             });
@@ -139,10 +140,11 @@ describe(pkg.name, function () {
                         ref: 'inv: 123'
                     })
                     .set('Accept', 'application/json')
-                    .expect(200)
+                    .expect(201)
                     .then((res) => {
                         (res.body).should.exist;
                         createdId2 = res.body._id;
+                        (res.body.paymentURLs).should.exist;
                         // console.log(JSON.stringify(res.body, null, 2));
                     });
             });
