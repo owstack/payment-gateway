@@ -72,7 +72,7 @@ PaymentSchema.virtual('status').get(function () {
     if (this.received && this.received.length) {
         return 'paid';
     }
-    if (this.expires > Date.now()) {
+    if (this.expires < Date.now()) {
         return 'expired';
     }
     return 'new';

@@ -167,6 +167,7 @@ describe(pkg.name, function () {
                     .expect(200)
                     .then((res) => {
                         res.body.should.exist;
+                        (res.body.status).should.not.equal('expired');
                     });
             });
 
