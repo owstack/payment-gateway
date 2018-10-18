@@ -15,19 +15,19 @@ const AddressSchema = new Schema({
     address: {type: String, required: true},
     wallet: {type: Schema.Types.ObjectId, required: true},
     addressIndex: {type: String, required: true}
-}, {_id: false});
+}, {_id: false, id: false});
 
 const PriceSchema = new Schema({
     pair: {type: String, required: true},
     amount: {type: Schema.Types.Decimal128, required: true},
     rate: {type: Schema.Types.Decimal128, required: true}
-}, {_id: false});
+}, {_id: false, id: false});
 
 const FeeSchema = new Schema({
     currency: {type: String, required: true},
     amount: {type: Schema.Types.Decimal128, required: true},
     blocks: {type: Number, required: true}
-}, {_id: false});
+}, {_id: false, id: false});
 
 const ReceiptSchema = new Schema({
     currency: {type: String, required: true},
@@ -36,7 +36,7 @@ const ReceiptSchema = new Schema({
     merchantData: {type: String},
     refundTo: {type: String},
     memo: {type: String}
-}, {_id: false});
+}, {_id: false, id: false});
 
 const PaymentSchema = new Schema({
     _id: {type: String, default: uuidV4},
