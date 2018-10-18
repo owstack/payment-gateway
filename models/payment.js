@@ -19,8 +19,7 @@ const AddressSchema = new Schema({
 
 const PriceSchema = new Schema({
     pair: {type: String, required: true},
-    amount: {type: Schema.Types.Decimal128, required: true},
-    rate: {type: Schema.Types.Decimal128, required: true}
+    amount: {type: Schema.Types.Decimal128, required: true}
 }, {_id: false, id: false});
 
 const FeeSchema = new Schema({
