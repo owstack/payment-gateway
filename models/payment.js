@@ -56,7 +56,11 @@ const PaymentSchema = new Schema({
 });
 
 PaymentSchema.virtual('paymentURLs').get(function () {
-    const url = `https://${config.externalHostname}/${this._id}`;
+    let path = `/${this._id}`;
+    if (config.proxyPath) {
+        path = `${config.proxyPath}/${this._id}`;
+    }
+    const url = `https://${config.externalHostname}${path}`;
     return {
         BTC: `bitcoin:?r=${url}`,
         BCH: `bitcoincash:?r=${url}`,

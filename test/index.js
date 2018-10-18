@@ -125,7 +125,7 @@ describe(pkg.name, function () {
                         (res.body).should.exist;
                         createdId = res.body._id;
                         (res.body.paymentURLs).should.exist;
-                        // console.log(JSON.stringify(res.body, null, 2));
+                        (res.body.paymentURLs.BTC).should.include('payments.owstack.org/test/proxy/path/');
                     });
             });
 

@@ -1,10 +1,10 @@
 {
   "name": "payment-gateway",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Accept payment in crypto currencies",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --no-timeouts",
+    "test": "NODE_ENV=test mocha --no-timeouts",
     "coverage": "NODE_ENV=test istanbul cover _mocha -- --no-timeouts"
   },
   "keywords": [
