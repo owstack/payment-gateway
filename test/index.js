@@ -228,6 +228,40 @@ describe(pkg.name, function () {
             });
         });
 
+        describe('Websocket update on payment', function () {
+            it('should send updated for subscribed documents', function (done) {
+                const Nes = require('nes');
+                const client = new Nes.Client(`ws://localhost:${config.port}`);
+                request(service.server.listener)
+                    .post('/')
+                    .set(config.authHeaders.id, '123')
+                    .send({
+                        currency: 'USD',
+                        amount: '0.50',
+                        memo: '$0.50 Test TX',
+                        ref: 'inv: 123'
+                    })
+                    .set('Accept', 'application/json')
+                    .expect(201)
+                    .then(async (res) => {
+                        (res.body).should.exist;
+                        await client.connect();
+                        client.subscribe(`/${res.body._id}`, (update) => {
+                            update.status.should.exist;
+                            done();
+                        });
+                        // update invoice to get notification
+                        return request(service.server.listener)
+                            .get(`/${res.body._id}`)
+                            .set('Accept', 'application/bitcoin-paymentrequest')
+                            .expect(200)
+                            .then(() => {
+                                // test in subscribe above
+                            });
+                    });
+            });
+        });
+
         describe('POST /{id}', function () {
             it('should accept payment', function () {
 

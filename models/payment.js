@@ -68,12 +68,22 @@ PaymentSchema.virtual('paymentURLs').get(function () {
 });
 
 PaymentSchema.virtual('status').get(function () {
+    if (this.received && this.received.length && this.expires < this.received.timestamp) {
+        return 'late';
+    }
+
     if (this.received && this.received.length) {
         return 'paid';
     }
+
+    if (this.addresses && this.addresses.length) {
+        return 'unpaid';
+    }
+
     if (this.expires < Date.now()) {
         return 'expired';
     }
+
     return 'new';
 });
 
