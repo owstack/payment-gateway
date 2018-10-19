@@ -61,6 +61,7 @@ describe(pkg.name, function () {
 
     describe('Address Generation:', function () {
         before(async function () {
+            await Wallet.deleteMany({}).exec();
             try {
                 await createWallet('BTC');
                 await createWallet('BCH');
