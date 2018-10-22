@@ -231,8 +231,8 @@ describe(pkg.name, function () {
 
         describe('Websocket update on payment', function () {
             it('should send updated for subscribed documents', function (done) {
-                const Nes = require('nes');
-                const client = new Nes.Client(`ws://localhost:${config.port}`);
+                const io = require('socket.io-client');
+                const client = io.connect(`http://localhost:${config.port}`, {reconnect: true});
                 request(service.server.listener)
                     .post('/')
                     .set(config.authHeaders.id, '123')
@@ -247,7 +247,7 @@ describe(pkg.name, function () {
                     .then(async (res) => {
                         (res.body).should.exist;
                         await client.connect();
-                        client.subscribe(`/${res.body._id}`, (update) => {
+                        client.on(`${res.body._id}`, (update) => {
                             update.status.should.exist;
                             done();
                         });

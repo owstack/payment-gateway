@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Accept payment in crypto currencies",
   "main": "index.js",
   "scripts": {
@@ -30,15 +30,14 @@
     "hapi-swagger": "floristic-project/hapi-swagger#master",
     "inert": "^5.1.0",
     "joi": "^13.6.0",
-    "jsonwebtoken": "^8.3.0",
-    "jwks-rsa": "^1.3.0",
     "lodash": "^4.17.11",
     "mathjs": "^5.1.2",
     "mongoose": "^5.2.14",
-    "nes": "^9.0.1",
     "nodemailer": "^4.6.8",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "uuid": "^3.3.2",
     "vision": "^5.4.0"
   },
