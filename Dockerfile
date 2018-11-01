@@ -1,4 +1,4 @@
-FROM node:8.9
+FROM node:8.12
 
 # update apt-get
 RUN apt-get update && apt-get install -y dnsutils
