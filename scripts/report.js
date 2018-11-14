@@ -45,7 +45,8 @@ function printRow(data) {
             data[3] = doc.created;
             data[4] = receipt.timestamp;
             data[5] = receipt.txid;
-            data[6] = _.find(doc.prices, {pair: `${receipt.currency}${doc.currency}`});
+            const receivedAmount = _.find(doc.prices, {pair: `${receipt.currency}${doc.currency}`});
+            data[6] = receivedAmount.amount;
             data[7] = receipt.currency;
             data[8] = receipt.refundTo;
             data[9] = receipt.memo;

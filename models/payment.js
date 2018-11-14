@@ -28,12 +28,17 @@ const FeeSchema = new Schema({
     blocks: {type: Number, required: true}
 }, {_id: false, id: false});
 
+const RefundSchema = new Schema({
+    amount: {type: Schema.Types.Decimal128, required: true},
+    script: String
+}, {_id: false, id: false});
+
 const ReceiptSchema = new Schema({
     currency: {type: String, required: true},
     timestamp: {type: Date, default: Date.now},
     txid: {type: String, required: true},
     merchantData: {type: String},
-    refundTo: {type: String},
+    refundTo: [RefundSchema],
     memo: {type: String}
 }, {_id: false, id: false});
 
