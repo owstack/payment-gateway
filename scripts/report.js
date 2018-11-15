@@ -17,9 +17,12 @@ const headers = [
     'txid', // 5
     'rec amount', // 6
     'rec currency', // 7
-    'refund to', // 8
-    'memo', // 9
-    'merchant data' // 10
+    'rec address', // 8
+    'rec addr index', // 9
+    'memo', // 10
+    'merchant data', // 11
+    'refund to', // 12
+
 ];
 
 function printRow(data) {
@@ -48,6 +51,11 @@ function printRow(data) {
             const receivedAmount = _.find(doc.prices, {pair: `${receipt.currency}${doc.currency}`});
             data[6] = receivedAmount.amount;
             data[7] = receipt.currency;
+            const address = _.find(doc.addresses, {currency: receipt.currency});
+            data[8] = address.address;
+            data[9] = address.addressIndex;
+            data[10] = receipt.memo;
+            data[11] = receipt.merchantData;
             let refundString = '';
             receipt.refundTo.forEach((refund) => {
                 if (refund && refund.amount && refund.amount.toString()) {
@@ -57,9 +65,7 @@ function printRow(data) {
                     refundString += `amount: ${refund.amount.toString()} script:${refund.script}`;
                 }
             });
-            data[8] = refundString;
-            data[9] = receipt.memo;
-            data[10] = receipt.merchantData;
+            data[12] = refundString;
             printRow(data);
         });
     });
