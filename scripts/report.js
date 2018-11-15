@@ -48,7 +48,14 @@ function printRow(data) {
             const receivedAmount = _.find(doc.prices, {pair: `${receipt.currency}${doc.currency}`});
             data[6] = receivedAmount.amount;
             data[7] = receipt.currency;
-            data[8] = receipt.refundTo;
+            let refundString = '';
+            receipt.refundTo.forEach((refund) => {
+                if (refundString) {
+                    refundString += ' ';
+                }
+                refundString += `amount: ${refund.amount.toString()} script:${refund.script}`;
+            });
+            data[8] = refundString;
             data[9] = receipt.memo;
             data[10] = receipt.merchantData;
             printRow(data);
