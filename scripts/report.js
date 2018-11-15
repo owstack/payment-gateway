@@ -23,7 +23,7 @@ const headers = [
 ];
 
 function printRow(data) {
-    console.log(`'${data.join('\',\'')}'`);
+    console.log(`"${data.join('","')}"`);
 }
 
 (async () => {
@@ -50,10 +50,12 @@ function printRow(data) {
             data[7] = receipt.currency;
             let refundString = '';
             receipt.refundTo.forEach((refund) => {
-                if (refundString) {
-                    refundString += ' ';
+                if (refund && refund.amount && refund.amount.toString()) {
+                    if (refundString) {
+                        refundString += ' ';
+                    }
+                    refundString += `amount: ${refund.amount.toString()} script:${refund.script}`;
                 }
-                refundString += `amount: ${refund.amount.toString()} script:${refund.script}`;
             });
             data[8] = refundString;
             data[9] = receipt.memo;
@@ -63,7 +65,6 @@ function printRow(data) {
     });
 
     payments.on('close', async () => {
-        console.log('Done. Closing db.');
         await mongoose.disconnect();
     });
 })();
