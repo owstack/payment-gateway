@@ -1,6 +1,6 @@
 {
   "name": "payment-gateway",
-  "version": "1.3.17",
+  "version": "1.3.18",
   "description": "Accept payment in crypto currencies",
   "main": "index.js",
   "scripts": {

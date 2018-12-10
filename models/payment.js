@@ -53,6 +53,7 @@ const PaymentSchema = new Schema({
     addresses: [AddressSchema],
     prices: [PriceSchema],
     fees: [FeeSchema],
+    markup: Number,
     received: [ReceiptSchema],
     memo: String,
     ref: String,
